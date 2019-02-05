@@ -1,51 +1,75 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<link rel="stylesheet" href="jemdoc.css" type="text/css" />
-<title>Yiming Wan </title>
-</head>
-<body>
-<table summary="Table for page layout." id="tlayout">
-<tr valign="top">
-<td id="layout-menu">
-<div class="menu-category">Yiming Wan</div>
-<div class="menu-item"><a href="index.html" class="current">Home</a></div>
-<div class="menu-item"><a href="bio.html">Biography</a></div>
-<div class="menu-item"><a href="activities.html">Activities</a></div>
-<div class="menu-category">Research</div>
-<div class="menu-item"><a href="topics.html">Topics</a></div>
-<div class="menu-item"><a href="publications.html">Publications</a></div>
-<div class="menu-item"><a href="projects.html">Projects</a></div>
-<div class="menu-category">Teaching</div>
-<div class="menu-item"><a href="courses.html">Courses</a></div>
-<div class="menu-category">Miscellaneous</div>
-<div class="menu-item"><a href="links.html">Links</a></div>
-<div class="menu-item"><a href="quotes.html">Quotes</a></div>
-</td>
-<td id="layout-content">
-<div id="toptitle">
-<h1>Yiming Wan </h1>
+---
+layout: default
+title: Home
+notitle: true
+
+# groups of columns of {roles: list, width: num, image: bool}
+role-tables:
+- - roles: [faculty, postdoc, staff]
+    width: 4
+    image: true
+  - roles: [grad]
+    width: 8
+    image: true
+- - roles: [collab, ugrad, ugrad-alum]
+    width: 5
+    image: false
+  - roles: [alum]
+    width: 7
+    image: false
+
+---
+
+<div class="jumbotron">
+    <p>
+        The <b>Awesome Research Group</b> at <b>Example U</b> does all sorts of
+        research. Here is a place where we tell you exactly what that is!
+    </p>
 </div>
-<table class="imgtable"><tr><td>
-<img src="MyPhoto.jpg" alt="alt text" width="135px" height="165px" />&nbsp;</td>
-<td align="left"><p><b>Associate Professor</b><br /><br />
-<a href="http://auto.hust.edu.cn">School of Artificial Intelligence and Automation</a> <br />
-<a href="http://english.hust.edu.cn/">Huazhong University of Science and Technology</a><br /><br />
-1037 Luoyu Road, Wuhan 430074, China <br /> 
-Email: ywan@hust.edu.cn</p>
-</td></tr></table>
-<h2>Recent News:</h2>
-<ul>
-<li><p>Dec 2018: Our paper &ldquo;Probability-guaranteed set-membership state estimation for polynomially uncertain linear time-invariant systems&rdquo; is presented at CDC2018 in Miami Beach, US.</p>
-</li>
-<li><p>July 2018: Our papers &ldquo;Robust static H-infinity output-feedback control using polynomial chaos&rdquo; and &ldquo;Mixed polynomial chaos and worst-case synthesis approach to robust observer based linear quadratic regulation&rdquo; are presented at ACC2018, Milwaukee, US.</p>
-</li>
-</ul>
-</td>
-</tr>
-</table>
-</body>
-</html>
+
+<section>
+    <h2>News</h2>
+    <ul class="news list-unstyled">
+        {% for post in site.posts limit: site.front_page_news %}
+            {% include news-item.html item=post %}
+        {% endfor %}
+    </ul>
+    {% assign numposts = site.posts | size %}
+    {% if numposts >= 1 %}
+        <p>
+            <span class="fa fa-fw fa-history"></span>
+            <a href="{{ site.base }}/blog.html">Older posts&hellip;</a>
+        </p>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Research</h2>
+    <div class="card-columns">
+        {% comment %}
+        Sort the projects by date, putting those without dates last
+        {% endcomment %}
+        {% assign projects_by_date = site.projects | sort: 'last-updated', 'first' %}
+        {% assign projects_by_date = projects_by_date | reverse %}
+        {% for p in projects_by_date %}
+            {% if p.status != "inactive" %}
+                {% include project-card.html project=p %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</section>
+
+<div id="people">
+    <h2>People</h2>
+    {% for role-table in page.role-tables %}
+        <section class="people row justify-content-between">
+            {% for role-column in role-table %}
+                <div class="col-md-{{ role-column.width }}">
+                    {% for role in role-column.roles %}
+                        {% include role-people.html role=role image=role-column.image %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </section>
+    {% endfor %}
+</div>
